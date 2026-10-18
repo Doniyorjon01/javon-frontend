@@ -1,0 +1,29 @@
+# Serverda: backend (javon) loyihasining docker-compose.prod.yml stekiga qo'shiladi.
+#   cp .env.example .env    # production qiymatlarini yozing
+#   docker compose up -d --build
+#
+# Backend steki "javon" nomi bilan ishlaydi, uning tarmog'i: javon_default.
+# Frontend shu tarmoqqa "frontend" nomi bilan ulanadi: Caddy uni frontend:3000 orqali
+# topadi (deploy/Caddyfile, FRONTEND_UPSTREAM), API esa backend:8000 da.
+name: javon-frontend
+
+services:
+  frontend:
+    build: .
+    env_file: .env
+    environment:
+      API_URL: ${API_URL:-http://backend:8000}
+    restart: always
+    networks:
+      javon:
+        aliases: [ frontend ]
+    logging:
+      driver: json-file
+      options:
+        max-size: "20m"
+        max-file: "5"
+
+networks:
+  javon:
+    external: true
+    name: javon_default
