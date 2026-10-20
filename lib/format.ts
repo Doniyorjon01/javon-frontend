@@ -121,6 +121,26 @@ export function prettyIsbn(isbn: string | null | undefined): string {
   return isbn.length === 13 ? `${isbn.slice(0, 3)}-${isbn.slice(3, 7)}-${isbn.slice(7, 12)}-${isbn.slice(12)}` : isbn;
 }
 
+/**
+ * Typed digits checked like the backend (utils/isbn.py): "ok", not 10/13 digits,
+ * or a wrong last digit (then the digit it should be).
+ */
+export function checkIsbn(raw: string): { ok: true } | { ok: false; expected?: string } {
+  const s = raw.replace(/[\s-]/g, "").toUpperCase();
+  if (/^\d{13}$/.test(s)) {
+    const sum = [...s.slice(0, 12)].reduce((acc, c, i) => acc + Number(c) * (i % 2 ? 3 : 1), 0);
+    const check = String((10 - (sum % 10)) % 10);
+    return check === s[12] ? { ok: true } : { ok: false, expected: check };
+  }
+  if (/^\d{9}[\dX]$/.test(s)) {
+    const sum = [...s.slice(0, 9)].reduce((acc, c, i) => acc + Number(c) * (10 - i), 0);
+    const r = (11 - (sum % 11)) % 11;
+    const check = r === 10 ? "X" : String(r);
+    return check === s[9] ? { ok: true } : { ok: false, expected: check };
+  }
+  return { ok: false };
+}
+
 export function storeUrl(template: string, slug: string): string {
   return template.replace("{slug}", slug).replace(/\/+$/, "");
 }

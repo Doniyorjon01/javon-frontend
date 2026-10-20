@@ -1,13 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useApp } from "@/components/app";
 import {
   ContactsSection,
   DeliverySection,
   LookSection,
   PaymentSection,
+  type Saver,
 } from "@/components/admin/settings-sections";
 import { OwnerOnly, PageHead } from "@/components/admin/shell";
 import { useStore } from "@/components/admin/store";
@@ -42,8 +43,33 @@ export default function SetupPage() {
     launch: !!tenant.launched_at,
   };
   const idx = STEPS.indexOf(step);
-  const next = () => setStep(STEPS[Math.min(STEPS.length - 1, idx + 1)]);
-  const back = () => setStep(STEPS[Math.max(0, idx - 1)]);
+  // "Continue" first saves what the step's forms changed. The forms of the
+  // shown step put their save function here; they run one after another (each
+  // answer is the whole store, so the last one must include both changes).
+  const firstSaver = useRef<Saver | null>(null);
+  const secondSaver = useRef<Saver | null>(null);
+  const [saving, setSaving] = useState(false);
+  const switchTo = (s: Step) => {
+    firstSaver.current = null;
+    secondSaver.current = null;
+    setStep(s);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+  const next = () => switchTo(STEPS[Math.min(STEPS.length - 1, idx + 1)]);
+  const back = () => switchTo(STEPS[Math.max(0, idx - 1)]);
+
+  async function saveAndNext() {
+    if (readOnly) return next();
+    setSaving(true);
+    try {
+      for (const saver of [firstSaver, secondSaver]) {
+        if (saver.current && !(await saver.current())) return;
+      }
+      next();
+    } finally {
+      setSaving(false);
+    }
+  }
 
   async function launch() {
     setBusy(true);
@@ -66,8 +92,8 @@ export default function SetupPage() {
         <button className="btn-link small" onClick={next}>
           {d.common.later}
         </button>
-        <button className="btn btn-ink btn-sm" onClick={next}>
-          {d.common.continue} <IArrow className="arr" size={16} />
+        <button className="btn btn-ink btn-sm" onClick={saveAndNext} disabled={saving}>
+          {saving && <Spinner />} {d.common.continue} <IArrow className="arr" size={16} />
         </button>
       </div>
     </div>
@@ -79,7 +105,7 @@ export default function SetupPage() {
       <div className="wiz">
         <nav className="wiz-steps" aria-label={d.setup.title}>
           {STEPS.map((s, i) => (
-            <button key={s} className={`wiz-step ${step === s ? "on" : ""} ${done[s] ? "done" : ""}`} onClick={() => setStep(s)} aria-current={step === s ? "step" : undefined}>
+            <button key={s} className={`wiz-step ${step === s ? "on" : ""} ${done[s] ? "done" : ""}`} onClick={() => switchTo(s)} aria-current={step === s ? "step" : undefined}>
               <span className="n">{done[s] ? <ICheck size={14} /> : i + 1}</span>
               {d.setup.steps[s]}
             </button>
@@ -101,7 +127,7 @@ export default function SetupPage() {
                 <h2 style={{ fontSize: 22 }}>{d.setup.lookTitle}</h2>
                 <p className="muted">{d.setup.lookText}</p>
               </div>
-              <LookSection onSaved={next} />
+              <LookSection saver={firstSaver} />
               {nav}
             </>
           )}
@@ -111,7 +137,7 @@ export default function SetupPage() {
                 <h2 style={{ fontSize: 22 }}>{d.setup.contactsTitle}</h2>
                 <p className="muted">{d.setup.contactsText}</p>
               </div>
-              <ContactsSection onSaved={next} />
+              <ContactsSection saver={firstSaver} />
               {nav}
             </>
           )}
@@ -142,8 +168,8 @@ export default function SetupPage() {
                 <h2 style={{ fontSize: 22 }}>{d.setup.deliveryTitle}</h2>
                 <p className="muted">{d.setup.deliveryText}</p>
               </div>
-              <DeliverySection />
-              <PaymentSection />
+              <DeliverySection saver={firstSaver} />
+              <PaymentSection saver={secondSaver} />
               {nav}
             </>
           )}
@@ -195,7 +221,7 @@ export default function SetupPage() {
                         ["telegram", d.setup.ckBot, false],
                       ] as Array<[Step, string, boolean]>
                     ).map(([k, label, must]) => (
-                      <button key={k} className="row" style={{ border: 0, background: "none", padding: 0, cursor: "pointer", textAlign: "left" }} onClick={() => setStep(k)}>
+                      <button key={k} className="row" style={{ border: 0, background: "none", padding: 0, cursor: "pointer", textAlign: "left" }} onClick={() => switchTo(k)}>
                         <span className={`badge ${done[k] ? "b-ok" : must ? "b-err" : ""}`} style={{ width: 26, height: 26, padding: 0, justifyContent: "center" }}>
                           {done[k] ? <ICheck size={14} /> : "·"}
                         </span>

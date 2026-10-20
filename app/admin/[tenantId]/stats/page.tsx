@@ -36,8 +36,8 @@ export default function StatsPage() {
         <div className="stack" style={{ gap: 18 }}>
           <div className="kpis">
             <div className="kpi hl"><span className="v">{data.orders}</span><span className="l">{d.stats.orders}</span></div>
-            <div className="kpi"><span className="v" style={{ fontSize: 24 }}><Money value={data.sales} /></span><span className="l">{d.stats.sales}</span></div>
-            <div className="kpi"><span className="v" style={{ fontSize: 24 }}><Money value={data.average_order} /></span><span className="l">{d.stats.avg}</span></div>
+            <div className="kpi"><span className="v sum">{money(data.sales, lang)}</span><span className="l">{d.stats.sales}</span></div>
+            <div className="kpi"><span className="v sum">{money(data.average_order, lang)}</span><span className="l">{d.stats.avg}</span></div>
             <div className="kpi"><span className="v">{data.customers}</span><span className="l">{d.stats.customers} · {fmt(d.stats.returning, {})}: {data.returning_customers}</span></div>
           </div>
           <div className="card stack">

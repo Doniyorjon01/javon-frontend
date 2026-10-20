@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { AppProvider } from "@/components/app";
 import { ShopFooter, ShopHeader, StickyCart } from "@/components/shop/parts";
 import { ShopProvider } from "@/components/shop/shop";
@@ -23,19 +24,8 @@ export default async function ShopLayout({ children, params }: { children: React
   const { store, lang, d, base } = await shopContext(slug);
   const cfg = publicConfig();
 
-  if (!store) {
-    return (
-      <AppProvider lang={lang} dict={d} config={cfg}>
-        <main className="auth-page">
-          <div className="auth-box" style={{ marginTop: "18vh", textAlign: "center", alignItems: "center" }}>
-            <span className="mono muted">{slug}</span>
-            <h1>{d.shop.storeClosed}</h1>
-            <p className="muted">{d.shop.storeClosedText}</p>
-          </div>
-        </main>
-      </AppProvider>
-    );
-  }
+  // No such store, or closed: a real 404 (app/s/not-found.tsx), not a 200 page.
+  if (!store) notFound();
 
   const theme = asTheme(store.theme);
   const style = {

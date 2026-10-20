@@ -26,4 +26,4 @@ services:
 networks:
   javon:
     external: true
-    name: javon_default
+    name: ${BACKEND_NETWORK:-javon_default}

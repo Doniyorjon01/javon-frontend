@@ -141,9 +141,12 @@ export type InventoryImportOut = {
   total_rows: number;
   processed_rows: number;
   report: Record<string, unknown> | null;
+  quantity_mode: QuantityMode;
   created_at: string;
   finished_at: string | null;
 };
+/** Excel import: "add" the file's quantity to the shelf (a new delivery), or "set" it (a stock count). */
+export type QuantityMode = "add" | "set";
 export type InventoryItemCreate = {
   book_id: number;
   price: number;
@@ -227,6 +230,7 @@ export type MyStoreOut = {
   status: TenantStatus;
   role: MemberRole;
   launched_at: string | null;
+  paused_at: string | null;
   access: AccessState;
 };
 export type OrderChannel = "web" | "telegram";
@@ -359,6 +363,9 @@ export type PaymentReviewIn = {
   note?: string | null;
 };
 export type PaymentStatus = "unpaid" | "under_review" | "paid";
+
+/** POST /storefront/{slug}/orders/statuses: the orders this browser remembers. */
+export type OrderStatusOut = { id: number; number: number; status: OrderStatus; payment_status: PaymentStatus };
 export type Plan = "start" | "standard" | "pro";
 export type PlanOut = {
   plan: Plan;
@@ -583,6 +590,7 @@ export type TenantOut = {
   plan: Plan;
   trial_ends_at: string | null;
   launched_at: string | null;
+  paused_at: string | null;
   created_at: string;
   updated_at: string;
   logo: Record<string, string> | null;

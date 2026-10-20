@@ -10,7 +10,7 @@ import { ApiError, api } from "@/lib/api";
 import { dateTime } from "@/lib/format";
 import { fmt } from "@/lib/i18n";
 import { useApi, useInterval } from "@/lib/hooks";
-import type { InventoryImportOut, Page } from "@/lib/types";
+import type { InventoryImportOut, Page, QuantityMode } from "@/lib/types";
 
 type Report = {
   books_matched?: number;
@@ -29,6 +29,7 @@ export default function ImportPage() {
   const [page, setPage] = useState(1);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<ApiError | null>(null);
+  const [mode, setMode] = useState<QuantityMode>("add");
   const list = useApi<Page<InventoryImportOut>>(`/tenants/${id}/inventory/imports`, { page, size: 10 });
   const active = list.data?.items.some((x) => x.status === "queued" || x.status === "running");
   useInterval(list.reload, active ? 2500 : null);
@@ -39,7 +40,7 @@ export default function ImportPage() {
     const form = new FormData();
     form.append("file", file);
     try {
-      await api<InventoryImportOut>(`/tenants/${id}/inventory/imports`, { method: "POST", form });
+      await api<InventoryImportOut>(`/tenants/${id}/inventory/imports`, { method: "POST", form, query: { quantity_mode: mode } });
       toast(file.name, "ok");
       setPage(1);
       list.reload();
@@ -57,6 +58,17 @@ export default function ImportPage() {
         <div className="card stack">
           <p>{d.imports.text}</p>
           <p className="muted small">{d.imports.columns}</p>
+          <div className="field">
+            <span>{d.imports.modeTitle}</span>
+            <div className="seg" role="radiogroup" aria-label={d.imports.modeTitle} style={{ alignSelf: "flex-start" }}>
+              {(["add", "set"] as const).map((m) => (
+                <button key={m} type="button" role="radio" aria-checked={mode === m} className={mode === m ? "on" : ""} onClick={() => setMode(m)}>
+                  {d.imports.mode[m]}
+                </button>
+              ))}
+            </div>
+            <span className="hint">{d.imports.modeHint[mode]}</span>
+          </div>
           <div className="row">
             <a className="btn btn-soft btn-sm" href={`/api/tenants/${id}/inventory/import-template`} download>
               <IDownload size={16} /> {d.imports.template}
@@ -95,7 +107,9 @@ export default function ImportPage() {
                       {d.enums.importStatus[imp.status]}
                     </span>
                   </div>
-                  <span className="muted xs">{dateTime(imp.created_at, lang)}</span>
+                  <span className="muted xs">
+                    {dateTime(imp.created_at, lang)} · {d.imports.mode[imp.quantity_mode ?? "add"]}
+                  </span>
                   {(imp.status === "running" || imp.status === "queued") && (
                     <>
                       <div className="hbar"><span style={{ width: `${pct}%` }} /></div>

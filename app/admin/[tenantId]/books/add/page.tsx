@@ -11,8 +11,8 @@ import { useStore } from "@/components/admin/store";
 import { IArrow, ICheck, IMinus, IPlus, ISearch } from "@/components/icons";
 import { ErrorBox, Field, FilePick, Loading, Pager, Spinner } from "@/components/ui";
 import { ApiError, api } from "@/lib/api";
-import { currency, groupDigits, parseSom, prettyIsbn } from "@/lib/format";
-import { fmt } from "@/lib/i18n";
+import { checkIsbn, currency, groupDigits, parseSom, prettyIsbn } from "@/lib/format";
+import { fmt, type Dict } from "@/lib/i18n";
 import { useApi, useDebounced } from "@/lib/hooks";
 import type { BookCreate, BookLanguage, BookOut, BookScript, InventoryItemOut, Page } from "@/lib/types";
 
@@ -98,7 +98,8 @@ function SearchTab({ onPick, onCreate }: { onPick: (b: BookOut) => void; onCreat
       <ErrorBox error={error} />
       {dq.length >= 2 && data && (
         <div className="stack-sm" style={{ gap: 2 }}>
-          {data.items.length === 0 && <p className="muted">{d.common.nothing}</p>}
+          {data.items.length === 0 &&
+            (notIsbn(dq, d) ? <div className="note note-warn small">{notIsbn(dq, d)}</div> : <p className="muted">{d.common.nothing}</p>)}
           {data.items.map((b) => (
             <div key={b.id} className="srow">
               <BookCover title={b.title} authors={b.authors} cover={b.cover} size="s" className="bthumb" />
@@ -130,6 +131,18 @@ function SearchTab({ onPick, onCreate }: { onPick: (b: BookOut) => void; onCreat
   );
 }
 
+/**
+ * Nothing found for a query of digits that cannot be an ISBN: say why ("12345"
+ * is not an ISBN, or its last digit is wrong) instead of only "nothing found".
+ */
+function notIsbn(q: string, d: Dict): string | null {
+  const digits = q.replace(/[\s-]/g, "");
+  if (!/^\d{4,}[\dXx]?$/.test(digits)) return null;
+  const check = checkIsbn(digits);
+  if (check.ok) return null;
+  return check.expected ? fmt(d.add.isbnBadDigit, { q, expected: check.expected }) : fmt(d.add.isbnNotLength, { q });
+}
+
 function IsbnTab({ scan, onPick, onCreate }: { scan: boolean; onPick: (b: BookOut) => void; onCreate: (isbn: string) => void }) {
   const { d } = useApp();
   const { id, base } = useStore();
@@ -140,7 +153,7 @@ function IsbnTab({ scan, onPick, onCreate }: { scan: boolean; onPick: (b: BookOu
 
   async function lookup(code: string) {
     const clean = code.replace(/[^0-9Xx]/g, "");
-    if (clean.length < 10) return;
+    if (!clean) return;
     setIsbn(clean);
     setBusy(true);
     setResult(null);
@@ -180,7 +193,7 @@ function IsbnTab({ scan, onPick, onCreate }: { scan: boolean; onPick: (b: BookOu
         <Field label={d.add.isbnLabel}>
           <input className="inp mono" inputMode="numeric" value={isbn} onChange={(e) => setIsbn(e.target.value)} maxLength={20} autoFocus={!scan} />
         </Field>
-        <button className="btn btn-ink" style={{ alignSelf: "flex-end" }} disabled={busy || isbn.replace(/\D/g, "").length < 10}>
+        <button className="btn btn-ink" style={{ alignSelf: "flex-end" }} disabled={busy || !/\d/.test(isbn)}>
           {busy && <Spinner />} {d.add.isbnFind}
         </button>
       </form>
@@ -361,7 +374,7 @@ function AddToShelf({ book, onDone }: { book: BookOut; onDone: (ok: boolean) => 
   async function save(e: React.FormEvent) {
     e.preventDefault();
     const tiyin = parseSom(price);
-    if (tiyin === null) return;
+    if (tiyin === null || tiyin <= 0) return;
     setBusy(true);
     setError(null);
     try {
@@ -399,6 +412,7 @@ function AddToShelf({ book, onDone }: { book: BookOut; onDone: (ok: boolean) => 
             <input autoFocus inputMode="numeric" required value={price} onChange={(e) => setPrice(groupDigits(e.target.value))} placeholder="65 000" style={{ fontSize: 20 }} />
             <span className="suffix">{currency(lang)}</span>
           </div>
+          {parseSom(price) === 0 && <span className="hint" style={{ color: "#a3242a" }}>{d.add.pricePositive}</span>}
         </Field>
         <Field label={d.add.qty}>
           <span className="qty" style={{ minHeight: 48 }}>
@@ -423,7 +437,7 @@ function AddToShelf({ book, onDone }: { book: BookOut; onDone: (ok: boolean) => 
           )}
         </div>
       )}
-      <button className="btn btn-primary" disabled={busy || readOnly || parseSom(price) === null}>
+      <button className="btn btn-primary" disabled={busy || readOnly || !((parseSom(price) ?? 0) > 0)}>
         {busy && <Spinner />} {d.add.saveNext} <IArrow className="arr" size={18} />
       </button>
       <button type="button" className="btn-link" style={{ alignSelf: "center", color: "var(--muted-2)" }} onClick={() => onDone(false)}>

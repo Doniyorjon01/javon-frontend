@@ -5,6 +5,7 @@ import { Suspense, useState } from "react";
 import { useApp } from "@/components/app";
 import {
   ContactsSection,
+  DangerSection,
   DeliverySection,
   LookSection,
   PaymentSection,
@@ -36,7 +37,12 @@ function SettingsInner() {
         ))}
       </div>
       <div style={{ maxWidth: tab === "look" ? 1100 : 820 }}>
-        {tab === "store" && <StoreSection />}
+        {tab === "store" && (
+          <div className="stack" style={{ gap: 18 }}>
+            <StoreSection />
+            <DangerSection />
+          </div>
+        )}
         {tab === "look" && <LookSection />}
         {tab === "contacts" && <ContactsSection />}
         {tab === "delivery" && <DeliverySection />}

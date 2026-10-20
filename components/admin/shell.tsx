@@ -185,6 +185,13 @@ function Banners() {
         {isOwner && <Link href={`${base}/subscription`} className="btn btn-ink btn-xs">{d.admin.banner.choosePlan}</Link>}
       </div>,
     );
+  if (tenant.launched_at && tenant.paused_at)
+    out.push(
+      <div key="p" className="banner warn">
+        <span>{d.settings.danger.paused}</span>
+        {isOwner && <Link href={`${base}/settings?tab=store`} className="btn btn-ink btn-xs">{d.settings.danger.resumeBtn}</Link>}
+      </div>,
+    );
   if (!tenant.launched_at && isOwner && !pathname.endsWith("/setup"))
     out.push(
       <div key="l" className="banner info">

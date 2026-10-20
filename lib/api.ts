@@ -26,14 +26,14 @@ export class ApiError extends Error {
     this.detail = detail;
   }
 
-  /** A readable line: for validation errors, the first field problem too. */
+  /**
+   * What to show. The backend already translates validation problems into the
+   * user's language, field name included («Telefon: ...»), and puts the first
+   * one in `message`; when several fields are wrong, all of them (up to 3).
+   */
   get readable(): string {
-    const first = this.detail.errors?.[0];
-    if (first?.msg) {
-      const field = (first.loc ?? []).filter((x) => x !== "body").join(".");
-      const msg = first.msg.replace(/^Value error, /, "");
-      return field ? `${this.message}: ${field} — ${msg}` : `${this.message}: ${msg}`;
-    }
+    const lines = [...new Set((this.detail.errors ?? []).map((e) => e.msg).filter((m): m is string => !!m))];
+    if (lines.length > 1) return lines.slice(0, 3).join("\n");
     return this.message;
   }
 }
@@ -105,6 +105,10 @@ export async function api<T = unknown>(path: string, opts: Options = {}): Promis
     if (detail && typeof detail === "object" && "code" in (detail as object)) {
       throw new ApiError(res.status, detail as ApiErrorDetail);
     }
+    if (res.status >= 502 && res.status <= 504) {
+      // The proxy or tunnel answered, the backend did not (restart, timeout).
+      throw new ApiError(res.status, { code: "server_unavailable", message: unavailableMessage() });
+    }
     throw new ApiError(res.status, {
       code: res.status === 404 ? "not_found" : "unknown_error",
       message: typeof detail === "string" ? detail : `HTTP ${res.status}`,
@@ -117,6 +121,12 @@ function networkMessage(): string {
   if (currentLang === "ru") return "Нет связи с сервером. Проверьте интернет и попробуйте снова.";
   if (currentLang === "en") return "Cannot reach the server. Check your connection and try again.";
   return "Server bilan aloqa yo'q. Internetni tekshirib, qayta urinib ko'ring.";
+}
+
+function unavailableMessage(): string {
+  if (currentLang === "ru") return "Сервер сейчас не отвечает. Подождите немного и попробуйте снова.";
+  if (currentLang === "en") return "The server is not responding right now. Wait a moment and try again.";
+  return "Server hozir javob bermayapti. Biroz kutib, qayta urinib ko'ring.";
 }
 
 export function errorText(e: unknown): string {

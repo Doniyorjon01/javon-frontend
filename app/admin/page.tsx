@@ -68,7 +68,9 @@ function StoresList() {
                   <span className="muted small mono">{hostOf(storeUrl(config.storeUrlTemplate, s.slug))}</span>
                 </span>
                 <span className="stack-sm" style={{ alignItems: "flex-end" }}>
-                  <span className={`badge ${s.launched_at ? "b-ok" : "b-warn"}`}>{s.launched_at ? d.stores.launched : d.stores.notLaunched}</span>
+                  <span className={`badge ${s.launched_at && !s.paused_at ? "b-ok" : "b-warn"}`}>
+                    {!s.launched_at ? d.stores.notLaunched : s.paused_at ? d.stores.paused : d.stores.launched}
+                  </span>
                   <span className="muted xs">
                     {d.enums.role[s.role]} · {d.enums.access[s.access]}
                   </span>
