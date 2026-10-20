@@ -31,7 +31,7 @@ export function ErrorBox({ error, onRetry }: { error: ApiError | Error | null | 
     <div className="note note-err row-between" role="alert">
       <span className="row" style={{ gap: 8 }}>
         <IAlert size={18} />
-        {msg || d.common.errorLoad}
+        <span style={{ whiteSpace: "pre-line" }}>{msg || d.common.errorLoad}</span>
       </span>
       {onRetry && (
         <button className="btn btn-xs btn-soft" onClick={onRetry}>

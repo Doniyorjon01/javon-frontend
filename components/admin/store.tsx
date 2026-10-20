@@ -72,7 +72,7 @@ export function StoreProvider({ children, notFound }: { children: React.ReactNod
       setTenant: (t: TenantOut) => {
         setTenant(t);
         // name / launch state also live in /auth/me (sidebar, store list)
-        if (t.name !== my.name || !!t.launched_at !== !!my.launched_at) void reloadMe();
+        if (t.name !== my.name || !!t.launched_at !== !!my.launched_at || !!t.paused_at !== !!my.paused_at) void reloadMe();
       },
       reloadTenant,
       my,

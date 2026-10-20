@@ -44,7 +44,8 @@ export function InventoryRow({
 
   const savePrice = () => {
     const tiyin = parseSom(price);
-    if (tiyin === null || tiyin === item.price) {
+    if (tiyin === 0) toast(d.add.pricePositive, "err");
+    if (tiyin === null || tiyin <= 0 || tiyin === item.price) {
       setPrice(groupDigits(String(Math.round(item.price / 100))));
       return;
     }
