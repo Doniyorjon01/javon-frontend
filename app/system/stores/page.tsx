@@ -47,7 +47,7 @@ export default function Stores() {
         <div className="card"><Empty title={d.common.nothing} /></div>
       ) : (
         <div className="card table-wrap" style={{ padding: 0 }}>
-          <table className="table">
+          <table className="table rtable">
             <thead>
               <tr>
                 <th>{d.settings.name}</th>
@@ -67,7 +67,7 @@ export default function Stores() {
                     <br />
                     <span className="mono xs muted">{t.slug} · {dateOnly(t.created_at, lang)}</span>
                   </td>
-                  <td className="small">
+                  <td className="small" data-label={S.owner}>
                     {t.owner ? (
                       <>
                         {t.owner.first_name}
@@ -75,11 +75,11 @@ export default function Stores() {
                       </>
                     ) : "—"}
                   </td>
-                  <td>{d.enums.plan[t.plan]}</td>
-                  <td><span className={`badge ${accessBadge(t.access)}`}>{d.enums.access[t.access]}</span>{!t.launched_at && <span className="badge" style={{ marginLeft: 4 }}>{d.stores.notLaunched}</span>}</td>
-                  <td>{t.orders_30d}</td>
-                  <td><Money value={t.sales_30d} /></td>
-                  <td className="small">{t.last_order_at ? dateTime(t.last_order_at, lang) : "—"}</td>
+                  <td data-label={d.subscription.plan}>{d.enums.plan[t.plan]}</td>
+                  <td data-label={d.subscription.state}><span className={`badge ${accessBadge(t.access)}`}>{d.enums.access[t.access]}</span>{!t.launched_at && <span className="badge" style={{ marginLeft: 4 }}>{d.stores.notLaunched}</span>}</td>
+                  <td data-label={S.orders30}>{t.orders_30d}</td>
+                  <td data-label={S.sales30}><Money value={t.sales_30d} /></td>
+                  <td className="small" data-label={S.lastOrder}>{t.last_order_at ? dateTime(t.last_order_at, lang) : "—"}</td>
                 </tr>
               ))}
             </tbody>

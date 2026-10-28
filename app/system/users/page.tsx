@@ -43,7 +43,7 @@ export default function Users() {
         <div className="card"><Empty title={d.common.nothing} /></div>
       ) : (
         <div className="card table-wrap" style={{ padding: 0 }}>
-          <table className="table">
+          <table className="table rtable">
             <thead>
               <tr>
                 <th>#</th>
@@ -57,18 +57,18 @@ export default function Users() {
             <tbody>
               {data?.items.map((u) => (
                 <tr key={u.id}>
-                  <td className="mono small">{u.id}</td>
-                  <td>
+                  <td className="mono small" data-label="#">{u.id}</td>
+                  <td data-label={d.login.devName}>
                     <strong>{u.first_name} {u.last_name ?? ""}</strong>
                     <br />
                     <span className="muted xs">{dateOnly(u.created_at, lang)} · {u.language}</span>
                   </td>
-                  <td className="small">
+                  <td className="small" data-label="Telegram">
                     <span className="mono">{u.telegram_id}</span>
                     {u.username && <span className="muted"> @{u.username}</span>}
                   </td>
-                  <td className="small">{prettyPhone(u.phone)}</td>
-                  <td>
+                  <td className="small" data-label={d.settings.phone}>{prettyPhone(u.phone)}</td>
+                  <td data-label={U.maxStores}>
                     <select className="inp" style={{ width: 80, minHeight: 36, padding: "4px 8px" }} value={u.max_stores} onChange={(e) => setMax(u, Number(e.target.value))} aria-label={U.maxStores}>
                       {[0, 1, 2, 3, 5, 10, 20, 50, 100].map((n) => <option key={n} value={n}>{n}</option>)}
                     </select>

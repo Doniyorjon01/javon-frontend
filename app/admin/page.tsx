@@ -28,8 +28,8 @@ function StoresList() {
         <Logo />
         <div className="row">
           <LangSwitch />
-          <button className="btn btn-soft btn-sm" onClick={logout}>
-            <ILogout size={16} /> {d.common.logout}
+          <button className="btn btn-soft btn-sm" onClick={logout} aria-label={d.common.logout}>
+            <ILogout size={16} /> <span className="hide-xs">{d.common.logout}</span>
           </button>
         </div>
       </header>
@@ -58,16 +58,16 @@ function StoresList() {
         ) : (
           <div className="stack-sm" style={{ gap: 12 }}>
             {me.stores.map((s) => (
-              <Link key={s.tenant_id} href={`/admin/${s.tenant_id}`} className="card lift row" style={{ textDecoration: "none", color: "inherit" }}>
+              <Link key={s.tenant_id} href={`/admin/${s.tenant_id}`} className="card lift store-card" style={{ textDecoration: "none", color: "inherit" }}>
                 <span className="logo-prev" style={{ width: 52, height: 52, fontSize: 22, borderRadius: 14, background: "var(--saffron)" }}>
                   {s.name.slice(0, 1).toUpperCase()}
                 </span>
-                <span className="grow">
+                <span className="store-card-name">
                   <strong style={{ fontSize: 18 }}>{s.name}</strong>
                   <br />
                   <span className="muted small mono">{hostOf(storeUrl(config.storeUrlTemplate, s.slug))}</span>
                 </span>
-                <span className="stack-sm" style={{ alignItems: "flex-end" }}>
+                <span className="store-card-state">
                   <span className={`badge ${s.launched_at && !s.paused_at ? "b-ok" : "b-warn"}`}>
                     {!s.launched_at ? d.stores.notLaunched : s.paused_at ? d.stores.paused : d.stores.launched}
                   </span>

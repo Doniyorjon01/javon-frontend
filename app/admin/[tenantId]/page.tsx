@@ -47,7 +47,7 @@ export default function StoreHome() {
         </Link>
       </div>
 
-      <div className="grid-2" style={{ alignItems: "start" }}>
+      <div className="grid-2 dash-grid" style={{ alignItems: "start" }}>
         <div className="card stack">
           <div className="row-between">
             <h2>{d.admin.home.recentOrders}</h2>
@@ -60,7 +60,7 @@ export default function StoreHome() {
           ) : (
             <div className="stack-sm" style={{ gap: 4 }}>
               {recent.data?.items.slice(0, 6).map((o) => (
-                <Link key={o.id} href={`${base}/orders/${o.id}`} className="srow" style={{ gridTemplateColumns: "56px minmax(0,1fr) auto", textDecoration: "none", color: "inherit" }}>
+                <Link key={o.id} href={`${base}/orders/${o.id}`} className="srow row-act" style={{ gridTemplateColumns: "56px minmax(0,1fr) auto", textDecoration: "none", color: "inherit" }}>
                   <span className="mono" style={{ fontWeight: 600 }}>#{o.number}</span>
                   <span style={{ minWidth: 0 }}>
                     <strong className="small">{o.customer_name}</strong>
@@ -89,7 +89,7 @@ export default function StoreHome() {
           )}
           <div className="card stack">
             <h2>{d.admin.home.quick}</h2>
-            <div className="grid-2">
+            <div className="quick-grid">
               {isOwner && (
                 <Link href={`${base}/books/add`} className="card card-tight lift row" style={{ textDecoration: "none", color: "inherit" }}>
                   <IPlus /> <strong className="grow small">{d.admin.home.qAdd}</strong> <IArrow size={16} />

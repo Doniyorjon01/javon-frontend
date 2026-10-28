@@ -30,18 +30,18 @@ export function SystemShell({ children }: { children: React.ReactNode }) {
   return (
     <div style={{ minHeight: "100vh" }}>
       <header style={{ background: "var(--ink)", color: "var(--paper)" }}>
-        <div className="container row-between" style={{ padding: "14px 20px" }}>
+        <div className="container row-between sys-head" style={{ padding: "14px 20px" }}>
           <div className="row" style={{ gap: 16 }}>
             <Logo dark href="/system" />
             <span className="badge" style={{ background: "var(--saffron)", color: "var(--ink)" }}>{d.system.title}</span>
           </div>
           <div className="row">
             <LangSwitch />
-            <Link href="/admin?list=1" className="btn btn-ghost-d btn-xs">
-              <IBack size={14} /> {d.stores.title}
+            <Link href="/admin?list=1" className="btn btn-ghost-d btn-xs" aria-label={d.stores.title}>
+              <IBack size={14} /> <span className="hide-xs">{d.stores.title}</span>
             </Link>
-            <button className="btn btn-ghost-d btn-xs" onClick={logout}>
-              <ILogout size={14} /> {d.common.logout}
+            <button className="btn btn-ghost-d btn-xs" onClick={logout} aria-label={d.common.logout}>
+              <ILogout size={14} /> <span className="hide-xs">{d.common.logout}</span>
             </button>
           </div>
         </div>
@@ -56,7 +56,7 @@ export function SystemShell({ children }: { children: React.ReactNode }) {
           })}
         </nav>
       </header>
-      <main className="container" style={{ padding: "28px 20px 60px" }}>
+      <main className="container sys-main">
         {children}
       </main>
     </div>

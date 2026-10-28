@@ -228,14 +228,14 @@ export function ContactsSection({ onSaved, saver }: SectionProps) {
       </div>
       <div className="field">
         <span>{d.settings.location}</span>
-        <div className="row" style={{ alignItems: "flex-end" }}>
+        <div className="loc-grid">
           <Field label={<span className="xs muted">{d.settings.latitude}</span>}>
-            <input className="inp mono" inputMode="decimal" value={f.lat} onChange={set("lat")} disabled={readOnly} style={{ maxWidth: 170 }} />
+            <input className="inp mono" inputMode="decimal" value={f.lat} onChange={set("lat")} disabled={readOnly} />
           </Field>
           <Field label={<span className="xs muted">{d.settings.longitude}</span>}>
-            <input className="inp mono" inputMode="decimal" value={f.lon} onChange={set("lon")} disabled={readOnly} style={{ maxWidth: 170 }} />
+            <input className="inp mono" inputMode="decimal" value={f.lon} onChange={set("lon")} disabled={readOnly} />
           </Field>
-          <button type="button" className="btn btn-soft btn-sm" onClick={myLocation} disabled={readOnly || locBusy} style={{ marginBottom: 4 }}>
+          <button type="button" className="btn btn-soft btn-sm" onClick={myLocation} disabled={readOnly || locBusy}>
             {locBusy ? <Spinner /> : <IPin size={16} />} {d.settings.useMyLocation}
           </button>
         </div>

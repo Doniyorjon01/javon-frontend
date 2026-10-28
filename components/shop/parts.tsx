@@ -72,8 +72,8 @@ export function ShopHeader() {
                 </span>
               )}
               {store.address && (
-                <span className="row" style={{ gap: 6 }}>
-                  <IPin size={15} /> {store.address}
+                <span className="row sf-top-addr" style={{ gap: 6 }}>
+                  <IPin size={15} /> <span className="sf-top-addr-text">{store.address}</span>
                 </span>
               )}
             </span>
@@ -98,7 +98,7 @@ export function ShopHeader() {
               </Link>
             )}
             {!inTelegram && store.telegram_username && (
-              <a href={`https://t.me/${store.telegram_username}`} target="_blank" rel="noreferrer" className="hbtn hbtn-o" aria-label="Telegram" style={{ padding: "0 14px" }}>
+              <a href={`https://t.me/${store.telegram_username}`} target="_blank" rel="noreferrer" className="hbtn hbtn-o hide-xs" aria-label="Telegram" style={{ padding: "0 14px" }}>
                 <ITelegram size={18} />
               </a>
             )}

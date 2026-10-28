@@ -15,9 +15,11 @@ export function Topbar({ d, dark = false, links = true }: { d: Dict; dark?: bool
           <Link className="nl" href="/#savollar">{d.nav.faq}</Link>
         </nav>
       )}
-      <div className="row" style={{ gap: 14 }}>
-        <LangSwitch />
-        <AuthButtons dark={dark} />
+      <div className="tb-right">
+        <LangSwitch className="tb-lang" />
+        <div className="tb-auth">
+          <AuthButtons dark={dark} />
+        </div>
       </div>
     </header>
   );

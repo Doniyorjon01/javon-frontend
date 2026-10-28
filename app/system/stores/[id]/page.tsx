@@ -127,7 +127,7 @@ export default function StoreDetail() {
           <p className="muted">{d.subscription.noPayments}</p>
         ) : (
           <div className="table-wrap">
-            <table className="table">
+            <table className="table rtable">
               <tbody>
                 {t.payments.map((p) => (
                   <tr key={p.id} style={{ opacity: p.is_active ? 1 : 0.5 }}>

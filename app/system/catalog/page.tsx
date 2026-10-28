@@ -58,7 +58,7 @@ export default function Moderation() {
       ) : (
         <div className="stack-sm" style={{ gap: 10 }}>
           {data?.items.map((b) => (
-            <div key={b.id} className="card card-tight row" style={{ alignItems: "flex-start", gap: 16 }}>
+            <div key={b.id} className="card card-tight mod-card">
               <BookCover title={b.title} authors={b.authors} cover={b.cover} size="s" style={{ width: 64, fontSize: 8 }} />
               <div className="grow stack-sm" style={{ gap: 4 }}>
                 <strong style={{ fontSize: 17 }}>{b.title}{b.subtitle ? `: ${b.subtitle}` : ""}</strong>

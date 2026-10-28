@@ -1,0 +1,233 @@
+/* javon.uz — phones and tablets.
+   Loaded after globals.css (app/layout.tsx), so these rules win. Checked at
+   320, 360, 390, 414, 768, 1024, 1366 and 1920 px wide: no page scrolls or is
+   cut off sideways, and nothing important hides behind fixed bars. */
+
+/* ---------- layout pieces used at every width ---------- */
+
+/* A grid without explicit columns grows to its widest child (the landing
+   bookshelf did that and pushed the hero text off a phone screen). */
+.hero-in { grid-template-columns: minmax(0, 1fr); }
+
+.clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Top bar of the platform pages: language switch + sign-in buttons. */
+.tb-right { display: flex; align-items: center; gap: 14px; }
+
+/* Store list (/admin): name, then its state. */
+.store-card { display: grid; grid-template-columns: 52px minmax(0, 1fr) auto; gap: 14px; align-items: center; }
+.store-card-name { min-width: 0; overflow-wrap: anywhere; }
+.store-card-state { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+
+/* Settings → contacts: latitude, longitude, "my location". */
+.loc-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 170px)) auto; gap: 12px; align-items: end; }
+.loc-grid .btn { margin-bottom: 4px; justify-self: start; }
+
+/* Platform moderation card: cover | text | status. */
+.mod-card { display: grid; grid-template-columns: 64px minmax(0, 1fr) auto; gap: 16px; align-items: start; }
+
+.sys-main { padding: 28px 20px 60px; }
+
+/* Product page "Add to cart": the label and how many are already in the cart. */
+.cta-label { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.15; text-align: left; }
+.cta-label small { font-size: 12px; font-weight: 500; opacity: 0.8; margin-top: 2px; }
+.cta-wide { gap: 12px; }
+
+/* The fixed "Cart" bar on a store page is a link: the store's link colour must
+   not paint its text in the same colour as its background. */
+.sf .cta-wide,
+.sf .cta-wide:hover { color: var(--s-accent-fg); text-decoration: none; }
+
+/* Fixed bars stay above the iPhone home indicator. */
+.sticky-cart { bottom: calc(12px + env(safe-area-inset-bottom)); }
+
+/* Long words (book titles, addresses, names) wrap instead of widening a box. */
+.card, .note, .panel, .orow, .inv-row, .srow, .book, .cart-line, .opt { overflow-wrap: anywhere; }
+
+/* One-line store address in the store's top strip. */
+.sf-top-addr { min-width: 0; }
+.sf-top-addr-text { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 46vw; }
+
+.track-steps .s { min-width: 0; overflow-wrap: anywhere; }
+
+/* Bottom sheets: dvh follows the mobile browser bar, vh is the fallback. */
+.modal { max-height: 92vh; max-height: 92dvh; padding-bottom: calc(22px + env(safe-area-inset-bottom)); }
+
+/* "so'm" after a price never splits in two. */
+.price-inp span, .inp-wrap .suffix { white-space: nowrap; flex-shrink: 0; }
+
+/* The store's top strip: icon and text stay on one line. */
+.sf-top .row { flex-wrap: nowrap; white-space: nowrap; }
+
+/* ---------- tablets and smaller (< 1024px: the admin sidebar is a drawer) ---------- */
+@media (max-width: 1023px) {
+  /* The panel grid is at least one screen tall: without this, a short page
+     shared the spare height with the top bar and stretched it (200–350px). */
+  .adm { grid-template-rows: auto 1fr; }
+  .side.open { width: min(300px, 86vw); padding-bottom: calc(18px + env(safe-area-inset-bottom)); }
+}
+
+/* Store header: a long store name gives way to the search box. */
+.sf-brand { min-width: 0; flex: 0 1 auto; }
+@media (min-width: 760px) {
+  .sf-search { min-width: 220px; }
+}
+@media (max-width: 859px) {
+  .big-cover { max-width: 240px; }
+}
+
+/* ---------- tablets (720–1099px) ---------- */
+@media (min-width: 720px) and (max-width: 1099px) {
+  .dash-grid { grid-template-columns: minmax(0, 1fr); }
+}
+.quick-grid { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+
+/* ---------- phones and small tablets (< 720px) ---------- */
+@media (max-width: 719px) {
+  /* iOS Safari zooms into any field with text under 16px: keep them at 16. */
+  .inp, select.inp, textarea.inp,
+  .inp-wrap input, .sf-search input, .price-inp input, .qty input,
+  .hours input[type="time"] { font-size: 16px; }
+
+  /* Tabs and segmented controls: one row that scrolls sideways. */
+  .tabs, .seg {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    max-width: 100%;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .tabs::-webkit-scrollbar, .seg::-webkit-scrollbar { display: none; }
+  .tabs > *, .seg > * { flex-shrink: 0; }
+
+  /* Buttons may wrap their label rather than run past the screen edge. */
+  .btn { white-space: normal; text-align: center; line-height: 1.25; padding-top: 8px; padding-bottom: 8px; max-width: 100%; }
+  .btn-block { width: 100%; }
+
+  .card { padding: 16px; border-radius: 18px; }
+  .bento .card { padding: 20px; }
+  .modal { padding-left: 18px; padding-right: 18px; }
+  .page-head { margin-bottom: 16px; }
+
+  /* Rows with an action on the right: the action moves under the text. */
+  .row-act { grid-template-columns: auto minmax(0, 1fr) !important; }
+  .row-act > :last-child { grid-column: 2; justify-self: start; }
+
+  /* Store list cards. */
+  .store-card { grid-template-columns: 48px minmax(0, 1fr); gap: 12px; }
+  .store-card .logo-prev { width: 48px !important; height: 48px !important; }
+  .store-card-state { grid-column: 2; flex-direction: row; flex-wrap: wrap; align-items: center; }
+
+  /* Logo uploader: the text and buttons go under the picture when narrow. */
+  .drop { flex-wrap: wrap; padding: 16px; gap: 14px; }
+  .drop > .grow { flex: 1 1 200px; }
+  .drop .row { flex-wrap: wrap; }
+  .logo-prev { width: 60px; height: 60px; }
+
+  /* Opening hours: day + open/closed on one line, the times under them. */
+  .hours { gap: 14px; }
+  .hours .d { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; }
+  .hours .d > :last-child { grid-column: 1 / -1; }
+  .hours .d > :last-child input[type="time"] { flex: 1; min-width: 0; }
+  .hours input[type="time"] { padding: 6px 6px; }
+
+  .loc-grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .loc-grid .btn { grid-column: 1 / -1; justify-self: start; margin-bottom: 0; }
+
+  /* Setup wizard: the steps are a slim strip that scrolls sideways. */
+  .wiz { gap: 16px; }
+  .wiz-steps { align-items: center; scrollbar-width: none; max-width: 100%; }
+  .wiz-steps::-webkit-scrollbar { display: none; }
+  .wiz-steps > p { display: none; }
+  .wiz-step { flex-shrink: 0; padding: 8px 12px; }
+
+  /* Platform admin header and moderation cards. */
+  .sys-head { flex-wrap: wrap; padding: 12px 16px !important; }
+  .sys-main { padding: 20px 16px 60px; }
+  .mod-card { grid-template-columns: 56px minmax(0, 1fr); gap: 12px; }
+  .mod-card > .badge { grid-column: 1 / -1; order: -1; justify-self: start; }
+
+  /* Tables become cards: every cell shows its column name. */
+  .rtable thead { display: none; }
+  .rtable, .rtable tbody, .rtable tr, .rtable td { display: block; width: 100%; }
+  .rtable tr { padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .rtable tr:last-child { border-bottom: 0; }
+  .rtable td { padding: 3px 0; border: 0 !important; max-width: none !important; }
+  .rtable td[data-label] { display: flex; justify-content: space-between; align-items: center; gap: 12px; text-align: right; }
+  .rtable td[data-label]::before { content: attr(data-label); color: var(--muted); font-size: 12.5px; font-weight: 500; text-align: left; flex-shrink: 0; }
+  .rtable td:first-child:not([data-label]) { font-size: 16px; padding-bottom: 6px; }
+  .table-wrap.card { padding: 0 !important; }
+
+  /* Payment card number on narrow phones. */
+  .card-num { font-size: 17px !important; letter-spacing: 0.03em !important; }
+
+  /* Landing page. */
+  .section { padding: 56px 0; }
+  .section-sm { padding: 40px 0; }
+  .hero-in { gap: 28px; padding-top: 12px; }
+  .hero p.lead { font-size: 16.5px; }
+  .shelf { min-height: 240px; }
+  .spine { font-size: 11.5px; }
+  .float-toast { right: 10px; top: 6px; padding: 10px 12px; }
+  .price .amount { font-size: 34px; }
+  .faq summary { font-size: 17px; }
+
+  /* Store site. */
+  .sf-main { padding: 20px 0 110px; }
+  .sf-top .container { flex-wrap: nowrap; }
+  .sf-top-addr { display: none !important; }
+  .sf-head .container { gap: 10px; padding-top: 12px; padding-bottom: 12px; }
+  .sf-brand strong { font-size: 18px; }
+  .sf-brand .av { width: 38px; height: 38px; }
+  .sf-hero { padding: 20px; border-radius: 20px; margin-bottom: 20px; }
+  .sf-grid { gap: 22px 14px; }
+  .book .bt { font-size: 14.5px; }
+  .book .pr strong { font-size: 15px; }
+  .stage { padding: 24px 16px; border-radius: 20px; }
+  .big-cover { max-width: 210px; }
+  .kv { grid-template-columns: 110px minmax(0, 1fr); }
+  .cart-line { grid-template-columns: 52px minmax(0, 1fr); gap: 4px 12px; }
+  .cart-line > :first-child { grid-row: span 2; align-self: start; }
+  .cart-line-sum { grid-column: 2; }
+  .track-steps { gap: 6px; }
+  .track-steps .s { font-size: 11.5px; }
+  .mini-bottom { gap: 10px; padding-left: 12px; padding-right: 12px; }
+  .mini-bottom .stp button { width: 36px; height: 40px; }
+  .cta-wide { padding: 0 14px; min-height: 52px; }
+}
+
+/* ---------- phones (< 640px): top bars ---------- */
+@media (max-width: 639px) {
+  /* Platform top bar: logo + language on the first line, sign-in buttons under them. */
+  .topbar { flex-wrap: wrap; padding: 14px 16px; gap: 12px; }
+  .tb-right { display: contents; }
+  .tb-lang { margin-left: auto; }
+  .tb-auth { flex: 1 0 100%; display: flex; }
+  .tb-auth > * { flex: 1; }
+  .tb-auth .row { width: 100%; flex-wrap: nowrap; gap: 10px !important; }
+  .tb-auth .row > * { flex: 1; }
+  .tb-auth .btn { width: 100%; }
+  .tb-auth .nl {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-height: 38px; border-radius: 999px; border: 1.5px solid currentColor; padding: 0 14px;
+  }
+  .tb-auth .nl::after { display: none; }
+  .langs button { padding: 5px 8px; }
+}
+
+/* ---------- small phones (< 400px) ---------- */
+@media (max-width: 399px) {
+  .container { padding-left: 16px; padding-right: 16px; }
+  .main { padding-left: 12px; padding-right: 12px; }
+  .kpis { gap: 10px; }
+  .kpi { padding: 14px; }
+  .kpi .v { font-size: 26px; }
+  .logo { font-size: 18px; }
+  .hero h1 { font-size: 36px; }
+  .sf-grid { gap: 20px 12px; }
+  .stp span { min-width: 22px; }
+  /* Product page bottom bar: stepper + "Add to cart" must fit in 320px. */
+  .mini-bottom { gap: 8px; }
+  .mini-bottom .stp button { width: 32px; }
+  .mini-bottom .cta-wide { padding: 0 12px; gap: 8px; font-size: 15px; min-width: 0; }
+}

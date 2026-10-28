@@ -75,7 +75,7 @@ export default function QrPage() {
                 <div key={it.id} className="srow" style={{ gridTemplateColumns: "44px minmax(0,1fr) auto" }}>
                   <BookCover title={it.book.title} authors={it.book.authors} cover={it.book.cover} size="s" className="bthumb" />
                   <span style={{ minWidth: 0 }}>
-                    <strong className="small">{it.book.title}</strong>
+                    <strong className="small clamp-2">{it.book.title}</strong>
                     <br />
                     <span className="muted xs"><Money value={it.price} /></span>
                   </span>

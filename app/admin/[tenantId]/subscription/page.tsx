@@ -55,7 +55,7 @@ export default function SubscriptionPage() {
                 <div className="card card-tight stack-sm" style={{ background: "var(--ink)", color: "var(--paper)", borderColor: "var(--ink)" }}>
                   <span className="xs" style={{ opacity: 0.7 }}>{d.subscription.payCard}</span>
                   <div className="row-between">
-                    <strong className="mono" style={{ fontSize: 20, letterSpacing: ".06em" }}>{s.pay_to.card_number.replace(/(\d{4})(?=\d)/g, "$1 ")}</strong>
+                    <strong className="mono card-num" style={{ fontSize: 20, letterSpacing: ".06em" }}>{s.pay_to.card_number.replace(/(\d{4})(?=\d)/g, "$1 ")}</strong>
                     <CopyButton text={s.pay_to.card_number} className="btn btn-saffron btn-xs" />
                   </div>
                   {s.pay_to.card_holder && <span className="small">{d.subscription.payHolder}: {s.pay_to.card_holder}</span>}
@@ -104,7 +104,7 @@ export default function SubscriptionPage() {
               <p className="muted">{d.subscription.noPayments}</p>
             ) : (
               <div className="table-wrap">
-                <table className="table">
+                <table className="table rtable">
                   <tbody>
                     {s.payments.map((p) => (
                       <tr key={p.id} style={{ opacity: p.is_active ? 1 : 0.5 }}>

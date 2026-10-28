@@ -3,6 +3,7 @@ import { AppProvider } from "@/components/app";
 import { publicConfig } from "@/lib/config";
 import { getDict } from "@/lib/i18n/server";
 import "./globals.css";
+import "./responsive.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const { d } = await getDict();
@@ -16,6 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // iPhone notch / home bar: lets env(safe-area-inset-*) keep fixed bars clear of them.
+  viewportFit: "cover",
   themeColor: "#15171C",
 };
 

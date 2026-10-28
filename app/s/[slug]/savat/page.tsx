@@ -200,7 +200,7 @@ export default function CartPage() {
                     </button>
                   </div>
                 </div>
-                <strong className="nowrap">{money(l.price * l.quantity, lang)}</strong>
+                <strong className="nowrap cart-line-sum">{money(l.price * l.quantity, lang)}</strong>
               </div>
             ))}
           </div>

@@ -103,7 +103,7 @@ function Track() {
                   <div className="card stack-sm" style={{ background: "var(--s-head)", color: "var(--s-head-fg)", borderColor: "transparent" }}>
                     <span className="xs" style={{ opacity: 0.75 }}>{d.shop.cardNumber}</span>
                     <div className="row-between">
-                      <strong className="mono" style={{ fontSize: 21, letterSpacing: ".06em" }}>{card.card_number.replace(/(\d{4})(?=\d)/g, "$1 ")}</strong>
+                      <strong className="mono card-num" style={{ fontSize: 21, letterSpacing: ".06em" }}>{card.card_number.replace(/(\d{4})(?=\d)/g, "$1 ")}</strong>
                       <CopyButton text={card.card_number} className="hbtn hbtn-o" />
                     </div>
                     <span className="small">{d.shop.cardHolder}: {card.card_holder}</span>

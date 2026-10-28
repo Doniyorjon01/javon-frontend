@@ -51,7 +51,7 @@ export default function Jobs() {
         <div className="card"><Empty title={d.common.nothing} /></div>
       ) : (
         <div className="card table-wrap" style={{ padding: 0 }}>
-          <table className="table">
+          <table className="table rtable">
             <thead>
               <tr>
                 <th>#</th>
@@ -65,8 +65,8 @@ export default function Jobs() {
             <tbody>
               {data?.items.map((j) => (
                 <tr key={j.id}>
-                  <td className="mono small">{j.id}</td>
-                  <td>
+                  <td className="mono small" data-label="#">{j.id}</td>
+                  <td data-label={J.kind}>
                     <span className="mono small">{j.kind}</span>
                     <br />
                     <span className="muted xs">
@@ -74,11 +74,11 @@ export default function Jobs() {
                       {j.tenant_id && ` · store #${j.tenant_id}`}
                     </span>
                   </td>
-                  <td>
+                  <td data-label={d.orders.status}>
                     <span className={`badge ${j.status === "failed" ? "b-err" : j.status === "done" ? "b-ok" : "b-warn"}`}>{d.enums.jobStatus[j.status]}</span>
                   </td>
-                  <td>{j.attempts} / {j.max_attempts}</td>
-                  <td className="xs mono" style={{ maxWidth: 380, wordBreak: "break-word" }}>{j.last_error ?? "—"}</td>
+                  <td data-label={J.attempts}>{j.attempts} / {j.max_attempts}</td>
+                  <td className="xs mono" style={{ maxWidth: 380, wordBreak: "break-word" }} data-label={J.lastError}>{j.last_error ?? "—"}</td>
                   <td>
                     {j.status === "failed" && (
                       <button className="btn btn-soft btn-xs" onClick={() => retry(j)}>

@@ -72,7 +72,7 @@ export default function SubmissionsPage() {
       ) : (
         <div className="stack-sm" style={{ gap: 10 }}>
           {data?.items.map((b) => (
-            <div key={b.id} className="inv-row" style={{ gridTemplateColumns: "44px minmax(0,1fr) auto" }}>
+            <div key={b.id} className="inv-row row-act" style={{ gridTemplateColumns: "44px minmax(0,1fr) auto" }}>
               <BookCover title={b.title} authors={b.authors} cover={b.cover} size="s" className="bthumb" />
               <div style={{ minWidth: 0 }}>
                 <strong>{b.title}</strong>

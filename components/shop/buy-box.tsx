@@ -32,11 +32,11 @@ export function BuyBox({ item }: { item: StorefrontItemOut }) {
         className="cta-wide"
         label={
           <>
-            <span>
+            <span className="cta-label">
               {d.shop.addToCart}
-              {inCart > 0 && <span style={{ opacity: 0.75, fontWeight: 500 }}> · {d.shop.inCart}: {inCart}</span>}
+              {inCart > 0 && <small>{d.shop.inCart}: {inCart}</small>}
             </span>
-            <span>{money(item.price * qty, lang)}</span>
+            <span className="nowrap">{money(item.price * qty, lang)}</span>
           </>
         }
       />
